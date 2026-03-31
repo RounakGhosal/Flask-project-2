@@ -46,13 +46,16 @@
             </div>
         </div>
     </div>
-    <form action="{{url_for('submit')}}" method="POST">
+    {% if username %}
+    <div class="text-center mt-4">
+        <h3>Welcome, {{ username }}! 🎉</h3>
+    </div>
+    {% else %}
+    <form action="{{url_for('submit')}}" method="POST" class="mt-4">
         <input type="text" name="username" placeholder="Enter your name">
         <input type="password" name="password" placeholder="Enter your password">
         <button type="submit">Submit</button>
     </form>
-    {% if username %}
-    <h1>{{ username }}</h1>
     {% endif %}
 </div>
 
