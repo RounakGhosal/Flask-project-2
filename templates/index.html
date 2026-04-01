@@ -57,13 +57,11 @@
         <button type="submit">Submit</button>
     </form>
     {% endif %}
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for msg in messages %}
-            <p>{{ msg }}</p>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}  
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, msg in messages %}
+        <p class="{{ category }}">{{ msg }}</p>
+    {% endfor %}
+    {% endwith %} 
 </div>
 
 <!-- Footer -->
