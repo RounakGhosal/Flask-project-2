@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session
+from flask import Flask, render_template, url_for, request, session, flash
 app = Flask(__name__)
 app.secret_key = "abc"
 
@@ -19,6 +19,7 @@ def submit():
     username = request.form["username"]
     password = request.form["password"]
     session["user"] = username
+    flash("Logged in succesfully","success")
     return render_template("index.html", username=username)
 
 if __name__ == "__main__":
