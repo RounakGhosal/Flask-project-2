@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}User{% endblock %}
+
+{% block content %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, msg in messages %}
+            <div class="text-center mt-4">
+                <p class="{{ category }}">{{ msg }}</p>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if user %}
+        <div class="text-center mt-4">
+            <h3>Welcome, {{ user }} 🎉</h3>
+        </div>
+    {% endif %}
+
+{% endblock %}

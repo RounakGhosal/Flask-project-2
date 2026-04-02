@@ -46,17 +46,13 @@
             </div>
         </div>
     </div>
-    {% if username %}
     <div class="text-center mt-4">
-        <h3>Welcome, {{ username }}! 🎉</h3>
-    </div>
-    {% else %}
-    <form action="{{url_for('submit')}}" method="POST" class="mt-4">
+        <form action="{{url_for('login')}}" method="POST" class="mt-4">
         <input type="text" name="username" placeholder="Enter your name">
         <input type="password" name="password" placeholder="Enter your password">
         <button type="submit">Submit</button>
-    </form>
-    {% endif %}
+        </form>
+    </div>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, msg in messages %}
         <p class="{{ category }}">{{ msg }}</p>
