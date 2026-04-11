@@ -5,35 +5,6 @@ app = Flask(__name__)
 app.secret_key = "abc"
 app.permanent_session_lifetime = timedelta(minutes=3)
 
-@app.route("/")
-def home():
-    if "user" in session:
-        return render_template("index.html", username=session["user"])
-    return render_template("index.html")
-
-@app.route("/link")
-def link():
-    if "user" not in session:
-        return "Please login first"
-    return render_template("link.html", user=session["user"])
-
-@app.route("/login", methods=["POST"])
-def login():
-    session.permanent = True
-
-    username = request.form["username"]
-    password = request.form["password"]
-
-    session["user"] = username
-
-    flash("Logged in successfully", "success")
-    from flask import Flask, render_template, url_for, request, session, flash, redirect
-from datetime import timedelta
-
-app = Flask(__name__)
-app.secret_key = "abc"
-app.permanent_session_lifetime = timedelta(minutes=3)
-
 
 @app.route("/")
 def home():
@@ -41,6 +12,20 @@ def home():
         return render_template("index.html", username=session["user"])
     return render_template("index.html")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        session.permanent = True
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        session["user"] = username
+
+        flash("Registered successfully", "success")
+        return redirect(url_for("user"))   
+
+    return render_template("register.html")  
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
