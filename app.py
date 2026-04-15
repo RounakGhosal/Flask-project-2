@@ -51,7 +51,7 @@ def login():
             session["user"] = username
             return redirect(url_for("user"))  
         else:
-            flash("Password doesn't matched","error")
+            flash("Invalid credentials","error")
             return redirect(url_for("login"))
 
     return render_template("login.html")   
