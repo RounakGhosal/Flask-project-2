@@ -33,7 +33,6 @@ def register():
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
-        session["user"] = username
         flash("Registered successfully", "success")
         return redirect(url_for("user"))   
 
@@ -49,6 +48,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password,password):
             flash("Logged in successfully", "success")
+            session["user"] = username
             return redirect(url_for("user"))  
         else:
             flash("Password doesn't matched","error")
