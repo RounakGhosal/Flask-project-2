@@ -15,31 +15,28 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(200))
-from app import db
-db.create_all()
+    password = db.Column(db.String(200),nullable=False)
+
 
 @app.route("/")
 def home():
     if "user" in session:
         return render_template("index.html", username=session["user"])
-    return render_template("index.html")
+    return render_template("register.html")
 
 @app.route("/register", methods = ["GET","POST"])
 def register():
     if request.method == "POST":
-        session.permanent = True
-
         username = request.form["username"]
         password =  generate_password_hash(request.form["password"])
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            flash("Username already existis","error")
+            flash("Username already exists","error")
             return redirect(url_for("register"))
         
         new_user = User(username=username,password=password)
         db.session.add(new_user)
-        db.commit()
+        db.session.commit()
         flash("Registered in successfully", "success")
         return redirect(url_for("login")) 
     return render_template("register.html")
@@ -55,10 +52,12 @@ def login():
         if user and check_password_hash(user.password,password):
             session["user"] = username
             flash("Logged in successfully", "success")
-            return redirect(url_for("user")) 
+            return redirect(url_for("user"))
+        elif not user: 
+            flash("No such username register first","error")
+            return redirect(url_for("register"))
         else:
             flash("Invalid username or password","error")  
-
     return render_template("login.html")   
 
 
@@ -87,4 +86,6 @@ def logout():
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
