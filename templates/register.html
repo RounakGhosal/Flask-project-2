@@ -2,14 +2,329 @@
 
 {% block title %}Register{% endblock %}
 
-{% block content %}
-<div class="col-md-4 mx-auto">
-    <h3 class="text-center">Register</h3>
+{% block extra_styles %}
+<style>
+    /* ─── Page Layout ─────────────────────────────────────────── */
+    .register-wrapper {
+        min-height: calc(100vh - var(--nav-height) - 5rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
 
-    <form method="POST">
-        <input class="form-control mb-3" type="text" name="username" placeholder="Username" required>
-        <input class="form-control mb-3" type="password" name="password" placeholder="Password" required>
-        <button class="btn btn-primary w-100">Register</button>
-    </form>
+    /* ─── Card ────────────────────────────────────────────────── */
+    .register-card {
+        width: 100%;
+        max-width: 420px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2.5rem 2.25rem 2.25rem;
+        position: relative;
+        overflow: hidden;
+        animation: cardIn 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) both 0.1s;
+    }
+
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(24px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+
+    /* Glow top edge */
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 10%; right: 10%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+        opacity: 0.6;
+    }
+
+    /* Corner accent blob */
+    .register-card::after {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 160px; height: 160px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(232,197,71,0.09) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* ─── Header ──────────────────────────────────────────────── */
+    .register-eyebrow {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-1);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .register-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 18px; height: 1px;
+        background: var(--accent-1);
+    }
+
+    .register-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--text-primary);
+        line-height: 1.1;
+        margin-bottom: 0.4rem;
+    }
+
+    .register-subtitle {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .register-subtitle a {
+        color: var(--accent-1);
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 0.2s;
+    }
+    .register-subtitle a:hover { opacity: 0.75; }
+
+    /* ─── Form Fields ─────────────────────────────────────────── */
+    .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .field-wrap {
+        position: relative;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 1rem;
+        pointer-events: none;
+        transition: color 0.2s;
+        z-index: 1;
+    }
+
+    .field-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 11px;
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        padding: 0.78rem 1rem 0.78rem 2.75rem;
+        outline: none;
+        transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+        -webkit-appearance: none;
+    }
+
+    .field-input::placeholder { color: var(--text-muted); }
+
+    .field-input:focus {
+        border-color: var(--accent-1);
+        background: rgba(232, 197, 71, 0.04);
+        box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.1);
+    }
+
+    .field-wrap:focus-within .field-icon {
+        color: var(--accent-1);
+    }
+
+    /* Password toggle */
+    .field-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 0;
+        font-size: 1rem;
+        transition: color 0.2s;
+        z-index: 1;
+    }
+    .field-toggle:hover { color: var(--text-primary); }
+
+    /* ─── Submit Button ───────────────────────────────────────── */
+    .btn-register {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+        background: var(--accent-1);
+        color: #0a0a0f;
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        border: none;
+        border-radius: 11px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+
+    .btn-register:hover {
+        background: #f0d060;
+        box-shadow: 0 0 28px rgba(232, 197, 71, 0.35);
+        transform: translateY(-1px);
+    }
+
+    .btn-register:active { transform: translateY(0); }
+
+    /* Arrow animation on hover */
+    .btn-register .btn-arrow {
+        transition: transform 0.2s;
+    }
+    .btn-register:hover .btn-arrow {
+        transform: translateX(3px);
+    }
+
+    /* ─── Divider ─────────────────────────────────────────────── */
+    .form-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1.4rem 0;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ─── Terms note ──────────────────────────────────────────── */
+    .terms-note {
+        text-align: center;
+        font-size: 0.77rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-top: 1.25rem;
+    }
+
+    .terms-note a {
+        color: var(--text-muted);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        transition: color 0.2s;
+    }
+    .terms-note a:hover { color: var(--text-primary); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-wrapper">
+    <div class="register-card">
+
+        <!-- Header -->
+        <p class="register-eyebrow">New Account</p>
+        <h1 class="register-title">Create an<br>account.</h1>
+        <p class="register-subtitle">
+            Already have one? <a href="/login">Sign in instead</a>
+        </p>
+
+        <!-- Form -->
+        <form method="POST">
+            <div class="field-group">
+
+                <!-- Username -->
+                <div class="field-wrap">
+                    <span class="field-icon"><i class="bi bi-person"></i></span>
+                    <input
+                        class="field-input"
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="field-wrap">
+                    <span class="field-icon"><i class="bi bi-lock"></i></span>
+                    <input
+                        class="field-input"
+                        type="password"
+                        name="password"
+                        id="passwordField"
+                        placeholder="Password"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="field-toggle"
+                        id="togglePassword"
+                        aria-label="Toggle password visibility"
+                    >
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-register">
+                Create Account
+                <i class="bi bi-arrow-right btn-arrow"></i>
+            </button>
+        </form>
+
+        <p class="terms-note">
+            By registering you agree to our
+            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </p>
+
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const passwordField = document.getElementById('passwordField');
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    togglePassword.addEventListener('click', () => {
+        const isHidden = passwordField.type === 'password';
+        passwordField.type = isHidden ? 'text' : 'password';
+        toggleIcon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+</script>
 {% endblock %}
