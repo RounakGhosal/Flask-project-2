@@ -1,21 +1,495 @@
 {% extends "base.html" %}
 
-{% block title %}User{% endblock %}
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ─── Page Layout ─────────────────────────────────────────── */
+    .dashboard-wrapper {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 1rem 1rem 4rem;
+        animation: fadeUp 0.5s ease both 0.1s;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ─── Hero Row ────────────────────────────────────────────── */
+    .hero-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2.25rem 2.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Glow top edge */
+    .hero-row::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 8%; right: 8%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+        opacity: 0.55;
+    }
+
+    /* Ambient blob */
+    .hero-row::after {
+        content: '';
+        position: absolute;
+        top: -80px; right: -80px;
+        width: 220px; height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(232,197,71,0.1) 0%, transparent 65%);
+        pointer-events: none;
+    }
+
+    .hero-text { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-1);
+        margin-bottom: 0.45rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 18px; height: 1px;
+        background: var(--accent-1);
+    }
+
+    .hero-title {
+        font-family: var(--font-display);
+        font-size: 2.1rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--text-primary);
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-title .username-highlight {
+        color: var(--accent-1);
+    }
+
+    .hero-subtitle {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        max-width: 360px;
+    }
+
+    /* Avatar */
+    .hero-avatar {
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+    }
+
+    .avatar-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #0a0a0f;
+        box-shadow: 0 0 28px rgba(232, 197, 71, 0.3);
+        position: relative;
+    }
+
+    /* Rotating ring */
+    .avatar-ring {
+        position: absolute;
+        inset: -5px;
+        border-radius: 50%;
+        border: 1.5px dashed rgba(232, 197, 71, 0.35);
+        animation: spin 12s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ─── Stats Strip ─────────────────────────────────────────── */
+    .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: border-color 0.25s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+        border-color: rgba(232, 197, 71, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .stat-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(232, 197, 71, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: var(--accent-1);
+        flex-shrink: 0;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.03em;
+        line-height: 1;
+    }
+
+    /* ─── Quick Actions ───────────────────────────────────────── */
+    .section-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .action-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.4rem 1.5rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: border-color 0.25s, background 0.25s, transform 0.2s;
+        cursor: pointer;
+    }
+
+    .action-card:hover {
+        border-color: rgba(232, 197, 71, 0.25);
+        background: rgba(232, 197, 71, 0.03);
+        transform: translateY(-2px);
+    }
+
+    .action-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .action-icon.yellow  { background: rgba(232,197,71,0.12);  color: var(--accent-1); }
+    .action-icon.blue    { background: rgba(96,165,250,0.12);  color: #60a5fa; }
+    .action-icon.green   { background: rgba(52,211,153,0.12);  color: #34d399; }
+    .action-icon.red     { background: rgba(248,113,113,0.12); color: #f87171; }
+
+    .action-body { flex: 1; min-width: 0; }
+
+    .action-title {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+        letter-spacing: -0.02em;
+    }
+
+    .action-desc {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .action-arrow {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        transition: transform 0.2s, color 0.2s;
+        flex-shrink: 0;
+    }
+
+    .action-card:hover .action-arrow {
+        transform: translateX(3px);
+        color: var(--accent-1);
+    }
+
+    /* ─── Activity Feed ───────────────────────────────────────── */
+    .activity-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .activity-header {
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .activity-header-title {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .badge-live {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #34d399;
+        background: rgba(52,211,153,0.12);
+        border: 1px solid rgba(52,211,153,0.2);
+        border-radius: 20px;
+        padding: 0.2rem 0.6rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .badge-live::before {
+        content: '';
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #34d399;
+        animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.3; }
+    }
+
+    .activity-list { padding: 0.5rem 0; }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.2s;
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item:hover { background: rgba(255,255,255,0.02); }
+
+    .activity-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .dot-yellow { background: var(--accent-1); box-shadow: 0 0 6px var(--accent-1); }
+    .dot-blue   { background: #60a5fa;         box-shadow: 0 0 6px #60a5fa; }
+    .dot-green  { background: #34d399;         box-shadow: 0 0 6px #34d399; }
+
+    .activity-text {
+        flex: 1;
+        font-size: 0.85rem;
+        color: var(--text-primary);
+    }
+
+    .activity-time {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+        .hero-row        { flex-direction: column; align-items: flex-start; padding: 1.75rem 1.5rem; }
+        .stats-strip     { grid-template-columns: 1fr 1fr; }
+        .actions-grid    { grid-template-columns: 1fr; }
+        .hero-title      { font-size: 1.6rem; }
+        .hero-avatar     { display: none; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, msg in messages %}
-            <div class="text-center mt-4">
-                <p class="{{ category }}">{{ msg }}</p>
-            </div>
-        {% endfor %}
-    {% endwith %}
+<div class="dashboard-wrapper">
 
     {% if user %}
-        <div class="text-center mt-4">
-            <h3>Welcome, {{ user }} 🎉</h3>
+
+    <!-- ── Hero Row ────────────────────────────────────────────── -->
+    <div class="hero-row">
+        <div class="hero-text">
+            <p class="hero-eyebrow">Dashboard</p>
+            <h1 class="hero-title">
+                Hey, <span class="username-highlight">{{ user }}</span>.<br>
+                Good to see you.
+            </h1>
+            <p class="hero-subtitle">Here's an overview of your account activity and quick links.</p>
         </div>
+
+        <div class="hero-avatar">
+            <div class="avatar-circle">
+                <span class="avatar-ring"></span>
+                {{ user[0] | upper }}
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Stats Strip ────────────────────────────────────────── -->
+    <div class="stats-strip">
+        <div class="stat-card">
+            <div class="stat-icon-wrap"><i class="bi bi-activity"></i></div>
+            <div>
+                <p class="stat-label">Sessions</p>
+                <p class="stat-value">24</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap"><i class="bi bi-calendar-check"></i></div>
+            <div>
+                <p class="stat-label">Member Since</p>
+                <p class="stat-value">2024</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap"><i class="bi bi-shield-check"></i></div>
+            <div>
+                <p class="stat-label">Status</p>
+                <p class="stat-value" style="color: #34d399; font-size:1rem;">Active</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Quick Actions ──────────────────────────────────────── -->
+    <p class="section-label">Quick Actions</p>
+    <div class="actions-grid">
+
+        <a href="/profile" class="action-card">
+            <div class="action-icon yellow"><i class="bi bi-person-circle"></i></div>
+            <div class="action-body">
+                <p class="action-title">Edit Profile</p>
+                <p class="action-desc">Update your info and avatar</p>
+            </div>
+            <i class="bi bi-arrow-right action-arrow"></i>
+        </a>
+
+        <a href="/settings" class="action-card">
+            <div class="action-icon blue"><i class="bi bi-gear"></i></div>
+            <div class="action-body">
+                <p class="action-title">Settings</p>
+                <p class="action-desc">Preferences & notifications</p>
+            </div>
+            <i class="bi bi-arrow-right action-arrow"></i>
+        </a>
+
+        <a href="/security" class="action-card">
+            <div class="action-icon green"><i class="bi bi-lock"></i></div>
+            <div class="action-body">
+                <p class="action-title">Security</p>
+                <p class="action-desc">Password & 2FA settings</p>
+            </div>
+            <i class="bi bi-arrow-right action-arrow"></i>
+        </a>
+
+        <a href="/logout" class="action-card">
+            <div class="action-icon red"><i class="bi bi-box-arrow-right"></i></div>
+            <div class="action-body">
+                <p class="action-title">Sign Out</p>
+                <p class="action-desc">End your current session</p>
+            </div>
+            <i class="bi bi-arrow-right action-arrow"></i>
+        </a>
+
+    </div>
+
+    <!-- ── Activity Feed ──────────────────────────────────────── -->
+    <p class="section-label">Recent Activity</p>
+    <div class="activity-card">
+        <div class="activity-header">
+            <span class="activity-header-title">Activity Log</span>
+            <span class="badge-live">Live</span>
+        </div>
+        <div class="activity-list">
+            <div class="activity-item">
+                <span class="activity-dot dot-green"></span>
+                <span class="activity-text">Logged in successfully</span>
+                <span class="activity-time">Just now</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-dot dot-yellow"></span>
+                <span class="activity-text">Profile viewed</span>
+                <span class="activity-time">2h ago</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-dot dot-blue"></span>
+                <span class="activity-text">Settings updated</span>
+                <span class="activity-time">Yesterday</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-dot dot-green"></span>
+                <span class="activity-text">Account created</span>
+                <span class="activity-time">7 days ago</span>
+            </div>
+        </div>
+    </div>
+
     {% endif %}
 
+</div>
 {% endblock %}
