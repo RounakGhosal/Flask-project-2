@@ -1,7 +1,726 @@
 {% extends "base.html" %}
 
-{% block title %} Links {% endblock %}
+{% block title %}Links{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ─── Page Layout ─────────────────────────────────────────── */
+    .links-wrapper {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 1rem 1rem 4rem;
+        animation: fadeUp 0.5s ease both 0.1s;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Page Header ─────────────────────────────────────────── */
+    .page-eyebrow {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-1);
+        margin-bottom: 0.45rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 18px; height: 1px;
+        background: var(--accent-1);
+    }
+
+    .page-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--text-primary);
+        line-height: 1.1;
+        margin-bottom: 0.35rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    /* ─── Add Link Card ───────────────────────────────────────── */
+    .add-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.75rem;
+        margin-bottom: 1.75rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 8%; right: 8%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+        opacity: 0.5;
+    }
+
+    .add-card-title {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .add-card-title i { color: var(--accent-1); }
+
+    .add-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 0.75rem;
+        align-items: end;
+    }
+
+    .field-wrap { position: relative; }
+
+    .field-label {
+        font-size: 0.73rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.4rem;
+        display: block;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 0.9rem;
+        bottom: 0.82rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        pointer-events: none;
+        transition: color 0.2s;
+        z-index: 1;
+    }
+
+    .field-input {
+        width: 100%;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        padding: 0.72rem 0.9rem 0.72rem 2.5rem;
+        outline: none;
+        transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+        -webkit-appearance: none;
+    }
+
+    .field-input::placeholder { color: var(--text-muted); }
+
+    .field-input:focus {
+        border-color: var(--accent-1);
+        background: rgba(232,197,71,0.04);
+        box-shadow: 0 0 0 3px rgba(232,197,71,0.1);
+    }
+
+    .field-wrap:focus-within .field-icon { color: var(--accent-1); }
+
+    .btn-add {
+        padding: 0.72rem 1.25rem;
+        background: var(--accent-1);
+        color: #0a0a0f;
+        font-family: var(--font-display);
+        font-size: 0.875rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+        position: relative;
+        overflow: hidden;
+        align-self: end;
+    }
+
+    .btn-add::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+
+    .btn-add:hover {
+        background: #f0d060;
+        box-shadow: 0 0 20px rgba(232,197,71,0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Error hint */
+    .field-error {
+        font-size: 0.75rem;
+        color: #f87171;
+        margin-top: 0.3rem;
+        display: none;
+    }
+
+    .field-error.visible { display: block; }
+
+    .field-input.is-invalid {
+        border-color: #f87171;
+        animation: shake 0.35s ease;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%       { transform: translateX(-5px); }
+        40%       { transform: translateX(5px); }
+        60%       { transform: translateX(-3px); }
+        80%       { transform: translateX(3px); }
+    }
+
+    /* ─── Filter / Search Row ─────────────────────────────────── */
+    .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .search-wrap {
+        flex: 1;
+        position: relative;
+    }
+
+    .search-wrap .field-icon { bottom: unset; top: 50%; transform: translateY(-50%); }
+
+    .search-input {
+        width: 100%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        padding: 0.65rem 0.9rem 0.65rem 2.5rem;
+        outline: none;
+        transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+        border-color: rgba(232,197,71,0.4);
+        box-shadow: 0 0 0 3px rgba(232,197,71,0.08);
+    }
+
+    .section-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        white-space: nowrap;
+    }
+
+    .count-badge {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--accent-1);
+        background: rgba(232,197,71,0.12);
+        border: 1px solid rgba(232,197,71,0.2);
+        border-radius: 20px;
+        padding: 0.18rem 0.6rem;
+    }
+
+    /* ─── Links List ──────────────────────────────────────────── */
+    .links-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .link-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: border-color 0.2s, transform 0.2s, opacity 0.3s;
+        animation: itemIn 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
+    }
+
+    @keyframes itemIn {
+        from { opacity: 0; transform: translateY(10px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    .link-item:hover { border-color: rgba(232,197,71,0.2); transform: translateY(-1px); }
+
+    .link-item.removing {
+        opacity: 0;
+        transform: translateX(20px) scale(0.96);
+        transition: all 0.3s ease;
+    }
+
+    /* Favicon */
+    .link-favicon {
+        width: 36px; height: 36px;
+        border-radius: 9px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .link-favicon img {
+        width: 20px; height: 20px;
+        object-fit: contain;
+    }
+
+    .link-body { flex: 1; min-width: 0; }
+
+    .link-title {
+        font-family: var(--font-display);
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.15rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .link-url {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .link-url:hover { color: var(--accent-1); }
+
+    /* Meta */
+    .link-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.3rem;
+        flex-shrink: 0;
+    }
+
+    .link-owner {
+        font-size: 0.73rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .link-owner-dot {
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: #0a0a0f;
+        font-family: var(--font-display);
+    }
+
+    .link-time {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+
+    /* Actions */
+    .link-actions { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+
+    .link-btn {
+        width: 32px; height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .link-btn:hover { border-color: rgba(232,197,71,0.3); color: var(--accent-1); background: rgba(232,197,71,0.06); }
+    .link-btn.danger:hover { border-color: rgba(248,113,113,0.3); color: #f87171; background: rgba(248,113,113,0.06); }
+
+    /* Copied tooltip */
+    .link-btn.copied {
+        border-color: rgba(52,211,153,0.4) !important;
+        color: #34d399 !important;
+        background: rgba(52,211,153,0.08) !important;
+    }
+
+    /* ─── Empty State ─────────────────────────────────────────── */
+    .empty-state {
+        text-align: center;
+        padding: 3.5rem 1rem;
+        display: none;
+    }
+
+    .empty-state.visible { display: block; }
+
+    .empty-icon {
+        font-size: 2.5rem;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+        opacity: 0.4;
+    }
+
+    .empty-title {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.3rem;
+    }
+
+    .empty-desc { font-size: 0.83rem; color: var(--text-muted); opacity: 0.7; }
+
+    /* ─── Toast ───────────────────────────────────────────────── */
+    .toast-container {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        pointer-events: none;
+    }
+
+    .toast {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        padding: 0.75rem 1.1rem;
+        font-size: 0.85rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        animation: toastIn 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
+        pointer-events: auto;
+    }
+
+    .toast.success { border-color: rgba(52,211,153,0.25); }
+    .toast.success i { color: #34d399; }
+    .toast.error   { border-color: rgba(248,113,113,0.25); }
+    .toast.error   i { color: #f87171; }
+
+    @keyframes toastIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.95); }
+        to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    @keyframes toastOut {
+        to { opacity: 0; transform: translateY(8px) scale(0.95); }
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+        .add-form-row { grid-template-columns: 1fr; }
+        .link-meta    { display: none; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<p>Hello {{ user }}, this is the link page</p>
+<div class="links-wrapper">
+
+    <!-- Header -->
+    <p class="page-eyebrow">Community</p>
+    <h1 class="page-title">Shared Links</h1>
+    <p class="page-subtitle">Hello <strong style="color:var(--text-primary)">{{ user }}</strong> — share useful links with everyone.</p>
+
+    <!-- Add Link Card -->
+    <div class="add-card">
+        <p class="add-card-title"><i class="bi bi-link-45deg"></i> Add a New Link</p>
+        <div class="add-form-row" id="addFormRow">
+
+            <div>
+                <label class="field-label">Title</label>
+                <div class="field-wrap">
+                    <span class="field-icon"><i class="bi bi-tag"></i></span>
+                    <input class="field-input" type="text" id="linkTitle" placeholder="e.g. Cool Resource">
+                </div>
+                <span class="field-error" id="titleError">Please enter a title.</span>
+            </div>
+
+            <div>
+                <label class="field-label">URL</label>
+                <div class="field-wrap">
+                    <span class="field-icon"><i class="bi bi-globe2"></i></span>
+                    <input class="field-input" type="url" id="linkUrl" placeholder="https://example.com">
+                </div>
+                <span class="field-error" id="urlError">Please enter a valid URL.</span>
+            </div>
+
+            <button class="btn-add" id="addBtn" onclick="addLink()">
+                <i class="bi bi-plus-lg"></i> Share
+            </button>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="search-wrap">
+            <span class="field-icon"><i class="bi bi-search"></i></span>
+            <input class="search-input" type="text" id="searchInput" placeholder="Search links…" oninput="filterLinks()">
+        </div>
+        <span class="section-label">Total</span>
+        <span class="count-badge" id="countBadge">0</span>
+    </div>
+
+    <!-- Links List -->
+    <div class="links-list" id="linksList"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+        <div class="empty-icon"><i class="bi bi-link-45deg"></i></div>
+        <p class="empty-title">No links yet</p>
+        <p class="empty-desc">Be the first to share something useful!</p>
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // ── State ──────────────────────────────────────────────────
+    const CURRENT_USER = "{{ user }}";
+
+    // Seed with some demo links so the page isn't empty
+    let links = [
+        { id: 1, title: "MDN Web Docs",     url: "https://developer.mozilla.org", user: "admin",     time: "2h ago"  },
+        { id: 2, title: "Flask Docs",        url: "https://flask.palletsprojects.com", user: "admin", time: "5h ago"  },
+        { id: 3, title: "Bootstrap 5",       url: "https://getbootstrap.com",      user: "alice",    time: "1d ago"  },
+        { id: 4, title: "CSS Tricks",        url: "https://css-tricks.com",        user: "bob",      time: "2d ago"  },
+    ];
+
+    let nextId = links.length + 1;
+
+    // ── Render ─────────────────────────────────────────────────
+    function render(filtered) {
+        const list  = document.getElementById('linksList');
+        const empty = document.getElementById('emptyState');
+        const badge = document.getElementById('countBadge');
+        const data  = filtered ?? links;
+
+        badge.textContent = data.length;
+        list.innerHTML    = '';
+
+        if (data.length === 0) {
+            empty.classList.add('visible');
+            return;
+        }
+
+        empty.classList.remove('visible');
+
+        data.forEach((link, idx) => {
+            const isOwner = link.user === CURRENT_USER;
+            const domain  = getDomain(link.url);
+            const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+            const initial = link.user.charAt(0).toUpperCase();
+
+            const item = document.createElement('div');
+            item.className = 'link-item';
+            item.dataset.id = link.id;
+            item.style.animationDelay = `${idx * 0.05}s`;
+
+            item.innerHTML = `
+                <div class="link-favicon">
+                    <img src="${favicon}" alt="" onerror="this.parentElement.innerHTML='<i class=\\'bi bi-link-45deg\\'></i>'">
+                </div>
+                <div class="link-body">
+                    <p class="link-title">${escHtml(link.title)}</p>
+                    <a class="link-url" href="${escHtml(link.url)}" target="_blank" rel="noopener">${escHtml(link.url)}</a>
+                </div>
+                <div class="link-meta">
+                    <span class="link-owner">
+                        <span class="link-owner-dot">${initial}</span>
+                        ${escHtml(link.user)}
+                    </span>
+                    <span class="link-time">${link.time}</span>
+                </div>
+                <div class="link-actions">
+                    <button class="link-btn" title="Copy link" onclick="copyLink(this, '${escHtml(link.url)}')">
+                        <i class="bi bi-copy"></i>
+                    </button>
+                    <a class="link-btn" href="${escHtml(link.url)}" target="_blank" rel="noopener" title="Open link">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    ${isOwner ? `<button class="link-btn danger" title="Delete" onclick="deleteLink(${link.id})"><i class="bi bi-trash3"></i></button>` : ''}
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+    }
+
+    // ── Add Link ───────────────────────────────────────────────
+    function addLink() {
+        const titleEl = document.getElementById('linkTitle');
+        const urlEl   = document.getElementById('linkUrl');
+        let   valid   = true;
+
+        // Validate title
+        if (!titleEl.value.trim()) {
+            titleEl.classList.add('is-invalid');
+            document.getElementById('titleError').classList.add('visible');
+            valid = false;
+        } else {
+            titleEl.classList.remove('is-invalid');
+            document.getElementById('titleError').classList.remove('visible');
+        }
+
+        // Validate URL
+        if (!isValidUrl(urlEl.value.trim())) {
+            urlEl.classList.add('is-invalid');
+            document.getElementById('urlError').classList.add('visible');
+            valid = false;
+        } else {
+            urlEl.classList.remove('is-invalid');
+            document.getElementById('urlError').classList.remove('visible');
+        }
+
+        if (!valid) return;
+
+        links.unshift({
+            id:    nextId++,
+            title: titleEl.value.trim(),
+            url:   urlEl.value.trim(),
+            user:  CURRENT_USER,
+            time:  'Just now',
+        });
+
+        titleEl.value = '';
+        urlEl.value   = '';
+        document.getElementById('searchInput').value = '';
+
+        render();
+        showToast('Link shared successfully!', 'success');
+    }
+
+    // ── Delete Link ────────────────────────────────────────────
+    function deleteLink(id) {
+        const item = document.querySelector(`.link-item[data-id="${id}"]`);
+        if (item) {
+            item.classList.add('removing');
+            setTimeout(() => {
+                links = links.filter(l => l.id !== id);
+                render();
+                showToast('Link removed.', 'error');
+            }, 280);
+        }
+    }
+
+    // ── Copy Link ──────────────────────────────────────────────
+    function copyLink(btn, url) {
+        navigator.clipboard.writeText(url).then(() => {
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<i class="bi bi-copy"></i>';
+            }, 1800);
+        });
+    }
+
+    // ── Search / Filter ────────────────────────────────────────
+    function filterLinks() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        if (!q) { render(); return; }
+        const filtered = links.filter(l =>
+            l.title.toLowerCase().includes(q) ||
+            l.url.toLowerCase().includes(q)   ||
+            l.user.toLowerCase().includes(q)
+        );
+        render(filtered);
+    }
+
+    // ── Toast ──────────────────────────────────────────────────
+    function showToast(msg, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast     = document.createElement('div');
+        const icon      = type === 'success' ? 'bi-check-circle-fill' : 'bi-trash3-fill';
+
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="bi ${icon}"></i> ${msg}`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'toastOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 2800);
+    }
+
+    // ── Helpers ────────────────────────────────────────────────
+    function isValidUrl(str) {
+        try { return ['http:', 'https:'].includes(new URL(str).protocol); }
+        catch { return false; }
+    }
+
+    function getDomain(url) {
+        try { return new URL(url).hostname; } catch { return ''; }
+    }
+
+    function escHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Allow Enter key to submit
+    ['linkTitle','linkUrl'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', e => {
+            if (e.key === 'Enter') addLink();
+        });
+    });
+
+    // ── Init ───────────────────────────────────────────────────
+    render();
+</script>
 {% endblock %}
