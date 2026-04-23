@@ -64,10 +64,11 @@ def login():
 
 @app.route('/links')
 def links():
-    if user not in session:
-        flash("Login first","error")
+    user = session.get("user")
+    if not user:
+        flash("Login first", "error")
         return redirect(url_for("login"))
-    return render_template('links.html', user=session.get('user'))
+    return render_template('link.html', user=user)
 
 
 @app.route("/user")
