@@ -70,9 +70,27 @@ def links():
         return redirect(url_for("login"))
     return render_template('link.html', user=user)
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def profile():
-    return render_template("profile.html")
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    message = None
+
+    if request.method == "POST":
+        session["display_name"] = request.form.get("display_name", "").strip()
+        session["bio"]          = request.form.get("bio", "").strip()
+        session["email"]        = request.form.get("email", "").strip()
+        message = "Profile updated successfully."
+
+    return render_template(
+        "profile.html",
+        user         = session.get("user"),
+        display_name = session.get("display_name", session.get("user", "")),
+        bio          = session.get("bio", ""),
+        email        = session.get("email", ""),
+        message      = message,
+    )
 
 
 @app.route("/user")
