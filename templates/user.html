@@ -6,14 +6,14 @@
 <style>
     /* ─── Page Layout ─────────────────────────────────────────── */
     .dashboard-wrapper {
-        max-width: 860px;
+        max-width: 640px;
         margin: 0 auto;
-        padding: 1rem 1rem 4rem;
-        animation: fadeUp 0.5s ease both 0.1s;
+        padding: 0.75rem 0.75rem 3rem;
+        animation: fadeUp 0.45s ease both 0.08s;
     }
 
     @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(16px); }
+        from { opacity: 0; transform: translateY(12px); }
         to   { opacity: 1; transform: translateY(0);    }
     }
 
@@ -22,34 +22,32 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1.5rem;
+        gap: 1rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 2.25rem 2.5rem;
-        margin-bottom: 1.5rem;
+        border-radius: 14px;
+        padding: 1.4rem 1.6rem;
+        margin-bottom: 1rem;
         position: relative;
         overflow: hidden;
     }
 
-    /* Glow top edge */
     .hero-row::before {
         content: '';
         position: absolute;
         top: 0; left: 8%; right: 8%;
         height: 1px;
         background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
-        opacity: 0.55;
+        opacity: 0.5;
     }
 
-    /* Ambient blob */
     .hero-row::after {
         content: '';
         position: absolute;
-        top: -80px; right: -80px;
-        width: 220px; height: 220px;
+        top: -60px; right: -60px;
+        width: 160px; height: 160px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(232,197,71,0.1) 0%, transparent 65%);
+        background: radial-gradient(circle, rgba(232,197,71,0.09) 0%, transparent 65%);
         pointer-events: none;
     }
 
@@ -57,42 +55,45 @@
 
     .hero-eyebrow {
         font-family: var(--font-body);
-        font-size: 0.72rem;
+        font-size: 0.65rem;
         font-weight: 500;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.13em;
         text-transform: uppercase;
         color: var(--accent-1);
-        margin-bottom: 0.45rem;
+        margin-bottom: 0.35rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     .hero-eyebrow::before {
         content: '';
         display: inline-block;
-        width: 18px; height: 1px;
+        width: 14px; height: 1px;
         background: var(--accent-1);
     }
 
     .hero-title {
         font-family: var(--font-display);
-        font-size: 2.1rem;
+        font-size: 1.55rem;
         font-weight: 800;
-        letter-spacing: -0.04em;
+        letter-spacing: -0.01em;
         color: var(--text-primary);
-        line-height: 1.1;
-        margin-bottom: 0.5rem;
+        line-height: 1.15;
+        margin-bottom: 0.3rem;
     }
 
     .hero-title .username-highlight {
         color: var(--accent-1);
+        font-weight: 700;
+        letter-spacing: 0em;
     }
 
     .hero-subtitle {
-        font-size: 0.88rem;
+        font-size: 0.78rem;
         color: var(--text-muted);
-        max-width: 360px;
+        max-width: 280px;
+        line-height: 1.45;
     }
 
     /* Avatar */
@@ -103,27 +104,26 @@
     }
 
     .avatar-circle {
-        width: 72px;
-        height: 72px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
         display: flex;
         align-items: center;
         justify-content: center;
         font-family: var(--font-display);
-        font-size: 1.75rem;
+        font-size: 1.3rem;
         font-weight: 800;
         color: #0a0a0f;
-        box-shadow: 0 0 28px rgba(232, 197, 71, 0.3);
+        box-shadow: 0 0 20px rgba(232, 197, 71, 0.28);
         position: relative;
     }
 
-    /* Rotating ring */
     .avatar-ring {
         position: absolute;
-        inset: -5px;
+        inset: -4px;
         border-radius: 50%;
-        border: 1.5px dashed rgba(232, 197, 71, 0.35);
+        border: 1.5px dashed rgba(232, 197, 71, 0.32);
         animation: spin 12s linear infinite;
     }
 
@@ -135,18 +135,18 @@
     .stats-strip {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 0.65rem;
+        margin-bottom: 1rem;
     }
 
     .stat-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.25rem 1.5rem;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.65rem;
         transition: border-color 0.25s, transform 0.2s;
     }
 
@@ -156,29 +156,29 @@
     }
 
     .stat-icon-wrap {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
         background: rgba(232, 197, 71, 0.1);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         color: var(--accent-1);
         flex-shrink: 0;
     }
 
     .stat-label {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         color: var(--text-muted);
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.15rem;
     }
 
     .stat-value {
         font-family: var(--font-display);
-        font-size: 1.35rem;
+        font-size: 1.1rem;
         font-weight: 700;
         color: var(--text-primary);
         letter-spacing: -0.03em;
@@ -187,30 +187,30 @@
 
     /* ─── Quick Actions ───────────────────────────────────────── */
     .section-label {
-        font-size: 0.72rem;
+        font-size: 0.65rem;
         font-weight: 500;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         color: var(--text-muted);
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.55rem;
     }
 
     .actions-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 0.65rem;
+        margin-bottom: 1rem;
     }
 
     .action-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.4rem 1.5rem;
+        border-radius: 10px;
+        padding: 0.95rem 1.1rem;
         text-decoration: none;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
         transition: border-color 0.25s, background 0.25s, transform 0.2s;
         cursor: pointer;
     }
@@ -222,13 +222,13 @@
     }
 
     .action-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.2rem;
+        font-size: 1rem;
         flex-shrink: 0;
     }
 
@@ -241,15 +241,15 @@
 
     .action-title {
         font-family: var(--font-display);
-        font-size: 0.95rem;
+        font-size: 0.82rem;
         font-weight: 700;
         color: var(--text-primary);
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.15rem;
         letter-spacing: -0.02em;
     }
 
     .action-desc {
-        font-size: 0.78rem;
+        font-size: 0.7rem;
         color: var(--text-muted);
         white-space: nowrap;
         overflow: hidden;
@@ -258,7 +258,7 @@
 
     .action-arrow {
         color: var(--text-muted);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         transition: transform 0.2s, color 0.2s;
         flex-shrink: 0;
     }
@@ -272,12 +272,12 @@
     .activity-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 10px;
         overflow: hidden;
     }
 
     .activity-header {
-        padding: 1.1rem 1.5rem;
+        padding: 0.8rem 1.1rem;
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
@@ -286,30 +286,30 @@
 
     .activity-header-title {
         font-family: var(--font-display);
-        font-size: 0.95rem;
+        font-size: 0.82rem;
         font-weight: 700;
         color: var(--text-primary);
         letter-spacing: -0.02em;
     }
 
     .badge-live {
-        font-size: 0.68rem;
+        font-size: 0.62rem;
         font-weight: 600;
         letter-spacing: 0.06em;
         text-transform: uppercase;
         color: #34d399;
-        background: rgba(52,211,153,0.12);
-        border: 1px solid rgba(52,211,153,0.2);
+        background: rgba(52,211,153,0.1);
+        border: 1px solid rgba(52,211,153,0.18);
         border-radius: 20px;
-        padding: 0.2rem 0.6rem;
+        padding: 0.15rem 0.5rem;
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.3rem;
     }
 
     .badge-live::before {
         content: '';
-        width: 6px; height: 6px;
+        width: 5px; height: 5px;
         border-radius: 50%;
         background: #34d399;
         animation: blink 1.4s ease-in-out infinite;
@@ -320,13 +320,13 @@
         50%       { opacity: 0.3; }
     }
 
-    .activity-list { padding: 0.5rem 0; }
+    .activity-list { padding: 0.25rem 0; }
 
     .activity-item {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0.85rem 1.5rem;
+        gap: 0.75rem;
+        padding: 0.6rem 1.1rem;
         border-bottom: 1px solid var(--border);
         transition: background 0.2s;
     }
@@ -335,33 +335,33 @@
     .activity-item:hover { background: rgba(255,255,255,0.02); }
 
     .activity-dot {
-        width: 8px; height: 8px;
+        width: 6px; height: 6px;
         border-radius: 50%;
         flex-shrink: 0;
     }
 
-    .dot-yellow { background: var(--accent-1); box-shadow: 0 0 6px var(--accent-1); }
-    .dot-blue   { background: #60a5fa;         box-shadow: 0 0 6px #60a5fa; }
-    .dot-green  { background: #34d399;         box-shadow: 0 0 6px #34d399; }
+    .dot-yellow { background: var(--accent-1); box-shadow: 0 0 5px var(--accent-1); }
+    .dot-blue   { background: #60a5fa;         box-shadow: 0 0 5px #60a5fa; }
+    .dot-green  { background: #34d399;         box-shadow: 0 0 5px #34d399; }
 
     .activity-text {
         flex: 1;
-        font-size: 0.85rem;
+        font-size: 0.78rem;
         color: var(--text-primary);
     }
 
     .activity-time {
-        font-size: 0.75rem;
+        font-size: 0.68rem;
         color: var(--text-muted);
         flex-shrink: 0;
     }
 
     /* ─── Responsive ──────────────────────────────────────────── */
-    @media (max-width: 600px) {
-        .hero-row        { flex-direction: column; align-items: flex-start; padding: 1.75rem 1.5rem; }
+    @media (max-width: 500px) {
+        .hero-row        { flex-direction: column; align-items: flex-start; padding: 1.2rem 1.1rem; }
         .stats-strip     { grid-template-columns: 1fr 1fr; }
         .actions-grid    { grid-template-columns: 1fr; }
-        .hero-title      { font-size: 1.6rem; }
+        .hero-title      { font-size: 1.25rem; }
         .hero-avatar     { display: none; }
     }
 </style>
@@ -380,7 +380,7 @@
                 Hey, <span class="username-highlight">{{ user }}</span>.<br>
                 Good to see you.
             </h1>
-            <p class="hero-subtitle">Here's an overview of your account activity and quick links.</p>
+            <p class="hero-subtitle">Overview of your account activity and quick links.</p>
         </div>
 
         <div class="hero-avatar">
@@ -411,7 +411,7 @@
             <div class="stat-icon-wrap"><i class="bi bi-shield-check"></i></div>
             <div>
                 <p class="stat-label">Status</p>
-                <p class="stat-value" style="color: #34d399; font-size:1rem;">Active</p>
+                <p class="stat-value" style="color: #34d399; font-size:0.88rem;">Active</p>
             </div>
         </div>
     </div>
