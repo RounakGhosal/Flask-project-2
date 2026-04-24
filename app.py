@@ -70,6 +70,10 @@ def links():
         return redirect(url_for("login"))
     return render_template('link.html', user=user)
 
+@app.route("/profile")
+def profile():
+    return render_template("profile.html")
+
 
 @app.route("/user")
 def user():
@@ -91,3 +95,5 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+    
