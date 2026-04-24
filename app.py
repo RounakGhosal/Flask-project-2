@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, request, session, flash, redi
 from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = "abc"
+app.secret_key = "Rounak2004"
 app.permanent_session_lifetime = timedelta(minutes=3)
 
 from flask_sqlalchemy import SQLAlchemy
