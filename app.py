@@ -22,7 +22,7 @@ class User(db.Model):
 @app.route("/")
 def home():
     if "user" in session:
-        return render_template("index.html", username=session["user"])
+        return render_template("user.html", username=session["user"])
     return render_template("register.html")
 
 @app.route("/register", methods = ["GET","POST"])
