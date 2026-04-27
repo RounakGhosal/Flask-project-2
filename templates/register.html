@@ -27,15 +27,24 @@
     }
 
     @keyframes cardIn {
-        from { opacity: 0; transform: translateY(24px) scale(0.97); }
-        to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     /* Glow top edge */
     .register-card::before {
         content: '';
         position: absolute;
-        top: 0; left: 10%; right: 10%;
+        top: 0;
+        left: 10%;
+        right: 10%;
         height: 1px;
         background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
         opacity: 0.6;
@@ -45,10 +54,12 @@
     .register-card::after {
         content: '';
         position: absolute;
-        top: -60px; right: -60px;
-        width: 160px; height: 160px;
+        top: -60px;
+        right: -60px;
+        width: 160px;
+        height: 160px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(232,197,71,0.09) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(232, 197, 71, 0.09) 0%, transparent 70%);
         pointer-events: none;
     }
 
@@ -69,7 +80,8 @@
     .register-eyebrow::before {
         content: '';
         display: inline-block;
-        width: 18px; height: 1px;
+        width: 18px;
+        height: 1px;
         background: var(--accent-1);
     }
 
@@ -95,7 +107,10 @@
         font-weight: 500;
         transition: opacity 0.2s;
     }
-    .register-subtitle a:hover { opacity: 0.75; }
+
+    .register-subtitle a:hover {
+        opacity: 0.75;
+    }
 
     /* ─── Form Fields ─────────────────────────────────────────── */
     .field-group {
@@ -135,7 +150,9 @@
         -webkit-appearance: none;
     }
 
-    .field-input::placeholder { color: var(--text-muted); }
+    .field-input::placeholder {
+        color: var(--text-muted);
+    }
 
     .field-input:focus {
         border-color: var(--accent-1);
@@ -162,7 +179,10 @@
         transition: color 0.2s;
         z-index: 1;
     }
-    .field-toggle:hover { color: var(--text-primary); }
+
+    .field-toggle:hover {
+        color: var(--text-primary);
+    }
 
     /* ─── Submit Button ───────────────────────────────────────── */
     .btn-register {
@@ -190,7 +210,7 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
     }
 
     .btn-register:hover {
@@ -199,12 +219,15 @@
         transform: translateY(-1px);
     }
 
-    .btn-register:active { transform: translateY(0); }
+    .btn-register:active {
+        transform: translateY(0);
+    }
 
     /* Arrow animation on hover */
     .btn-register .btn-arrow {
         transition: transform 0.2s;
     }
+
     .btn-register:hover .btn-arrow {
         transform: translateX(3px);
     }
@@ -244,7 +267,10 @@
         text-underline-offset: 2px;
         transition: color 0.2s;
     }
-    .terms-note a:hover { color: var(--text-primary); }
+
+    .terms-note a:hover {
+        color: var(--text-primary);
+    }
 </style>
 {% endblock %}
 
@@ -260,40 +286,23 @@
         </p>
 
         <!-- Form -->
-        <form method="POST">
+        <form method="POST" action="/register">
             <div class="field-group">
 
                 <!-- Username -->
                 <div class="field-wrap">
                     <span class="field-icon"><i class="bi bi-person"></i></span>
-                    <input
-                        class="field-input"
-                        type="text"
-                        name="username"
-                        placeholder="Username"
-                        autocomplete="username"
-                        required
-                    >
+                    <input class="field-input" type="text" name="username" placeholder="Username"
+                        autocomplete="username" required>
                 </div>
 
                 <!-- Password -->
                 <div class="field-wrap">
                     <span class="field-icon"><i class="bi bi-lock"></i></span>
-                    <input
-                        class="field-input"
-                        type="password"
-                        name="password"
-                        id="passwordField"
-                        placeholder="Password"
-                        autocomplete="new-password"
-                        required
-                    >
-                    <button
-                        type="button"
-                        class="field-toggle"
-                        id="togglePassword"
-                        aria-label="Toggle password visibility"
-                    >
+                    <input class="field-input" type="password" name="password" id="passwordField" placeholder="Password"
+                        autocomplete="new-password" required>
+                    <button type="button" class="field-toggle" id="togglePassword"
+                        aria-label="Toggle password visibility">
                         <i class="bi bi-eye" id="toggleIcon"></i>
                     </button>
                 </div>
